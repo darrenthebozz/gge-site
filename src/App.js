@@ -24,7 +24,7 @@ function App() {
   let [plugins, setPlugins] = React.useState([])
   let ws = React.useMemo(() => {
     let usersInternal = []
-    const ws = new ReconnectingWebSocket(`${location.protocol === 'https:' ? "wss" : "ws"}://${window.location.hostname}:8882`,[], {WebSocket: WebSocket, minReconnectionDelay: 3000 })
+    const ws = new ReconnectingWebSocket(`${window.location.protocol === 'https:' ? "wss" : "ws"}://${window.location.hostname}:8882`,[], {WebSocket: WebSocket, minReconnectionDelay: 3000 })
     
     //const ws = new ReconnectingWebSocket(__DEV__ ? "ws://127.0.0.1:8882" : "wss://ashportal.ddns.net:8882",[], {WebSocket: WebSocket, minReconnectionDelay: 3000 })
     //ashportal.ddns.net

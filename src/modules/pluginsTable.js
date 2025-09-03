@@ -12,7 +12,12 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import IconButton from '@mui/material/IconButton';
 import Collapse from '@mui/material/Collapse';
 import Checkbox from '@mui/material/Checkbox';
+import Select from '@mui/material/Select';
 import Box from '@mui/material/Box';
+
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
 
 import TextField from '@mui/material/TextField';
 import FormGroup from '@mui/material/FormGroup';
@@ -75,8 +80,25 @@ export default function PluginsTable(props) {
                                         
                                             // return <TextField required label={obj.label} value={value} key={obj.label} onChange={(_, newValue) => onChange(newValue)} />
                                         }
-                                        if (obj.type == "Checkbox") {
+                                        else if (obj.type == "Checkbox") {
                                             return <FormControlLabel control={<Checkbox /> } label={obj.label} key={obj.label} checked={value} onChange={(_, newValue) => onChange(newValue)} />
+                                        }
+                                        else if (obj.type == "Select") {
+                                            return <FormControl>
+                                                <InputLabel id="simple-select-label">{obj.label}</InputLabel>
+                                                <Select
+                                                    labelId="simple-select-label"
+                                                    id="simple-select"
+                                                    value={value}
+                                                    label={obj.label}
+                                                    onChange={(newValue) => onChange(newValue.target.value)}
+                                                >
+                                                    {
+                                                        obj.selection.map((e,i) => <MenuItem value={i}>{e}</MenuItem>)
+                                                    }
+                                                </Select>
+                                            </FormControl>
+                                            //return <FormControlLabel control={<Select /> } label={obj.label} key={obj.label} checked={value} onChange={(_, newValue) => onChange(newValue)} />
                                         }
                                         else if (obj.type == "Slider") {
                                             return <Box sx={{ display: "flex", whiteSpace: "nowrap", justifyContent: "center", padding: "1px", textAlign: "center" }}>

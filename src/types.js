@@ -41,8 +41,8 @@ class User {
       this.name = String(obj.name) 
       this.pass = String(obj.pass ? obj.pass : "")
       this.plugins = obj.plugins
-      this.temporary = Boolean(obj?.temporary)
       this.lt = Number(obj.lt)
+      this.externalEvent = Boolean(obj?.externalEvent)
     }
   }
 export { ActionType, GetActionTypeName, ErrorType, GetErrorTypeName, LogLevel, User }

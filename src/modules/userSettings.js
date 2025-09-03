@@ -18,6 +18,7 @@ export default function UserSettings(props) {
     const [name, setName] = React.useState(props.selectedUser.name)
     const [pass, setPass] = React.useState("")
     const [plugins, setPlugins] = React.useState(props.selectedUser.plugins)
+    const [externalEvent, setExternalEvent] = React.useState(props.selectedUser.externalEvent)
     return (
         <div onClick={(event) => event.stopPropagation()}>
             <Paper>
@@ -32,7 +33,7 @@ export default function UserSettings(props) {
                 <FormGroup row={true} style={{ padding: "12px" }}>
                     <TextField required label="Username" value={name} onChange={e => setName(e.target.value)} disabled={!isNewUser} />
                     <TextField required label="Password" type='password' value={pass} onChange={e => setPass(e.target.value)} />
-                    <FormControlLabel style={{ margin: "auto", marginRight:"2px" }} control={<Checkbox defaultChecked />} disabled={!isNewUser} onChange={e => props.selectedUser.temporary = e.target.value} label="Remember" />
+                    <FormControlLabel style={{ margin: "auto", marginRight:"2px" }} control={<Checkbox/>} checked={externalEvent} onChange={e => setExternalEvent(e.target.checked)} label="OR/BTH" />
 
                     <PluginsTable plugins={props.plugins} userPlugins={plugins} 
                     onChange={ e => setPlugins(e)}/>
@@ -41,6 +42,7 @@ export default function UserSettings(props) {
                             try {
                                 props.selectedUser.name = name
                                 props.selectedUser.plugins = plugins
+                                props.selectedUser.externalEvent = externalEvent
                                 if(pass)
                                 props.selectedUser.pass = pass
                                 else if(isNewUser)
