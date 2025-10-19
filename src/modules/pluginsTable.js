@@ -24,9 +24,31 @@ import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Slider from '@mui/material/Slider';
 import Typography from '@mui/material/Typography';
+import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { TimePicker } from '@mui/x-date-pickers/TimePicker';
+
+function TimePickerViews() {
+  return (
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <DemoContainer components={['TimePicker', 'TimePicker', 'TimePicker']}>
+        <DemoItem label={'"hours", "minutes" and "seconds"'}>
+          <TimePicker views={['hours', 'minutes', 'seconds']} />
+        </DemoItem>
+        <DemoItem label={'"hours"'}>
+          <TimePicker views={['hours']} />
+        </DemoItem>
+        <DemoItem label={'"minutes" and "seconds"'}>
+          <TimePicker views={['minutes', 'seconds']} format="mm:ss" />
+        </DemoItem>
+      </DemoContainer>
+    </LocalizationProvider>
+  );
+}
 
 export default function PluginsTable(props) {
-    let userPlugins = props.userPlugins 
+    let userPlugins = props.userPlugins
     userPlugins ??= {}
     let Plugin = (props2) => {
         userPlugins[props2.data.key] ??= {}
@@ -34,29 +56,29 @@ export default function PluginsTable(props) {
         const [state, setState] = React.useState(userPlugins[props2.data.key]?.state)
         return (
             <>
-            <TableRow>
-                <TableCell>
-                    {
-                        props2.data?.pluginOptions ? (
-                        <IconButton
-                            aria-label="expand row"
-                            size="small"
-                            onClick={() => setOpen(!open)}>
-                            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-                        </IconButton>
-                        ) : undefined
-                    }
-                </TableCell>
-                <TableCell>{props2.data.name}</TableCell>
-                <TableCell>{props2.data.description}</TableCell>
-                <TableCell align='right'>
-                { !props2.data.force ? 
-                <Button variant="contained" style={{ maxWidth: '64px', maxHeight: '32px', minWidth: '32px', minHeight: '32px', marginLeft: "10px" }} onClick={() => {
-                            setState(!state)
-                            userPlugins[props2.data.key].state = !state
-                            props.onChange(userPlugins)
-                        }}>{state ? "Stop" : "Start"}</Button> : ""
-                    }
+                <TableRow>
+                    <TableCell>
+                        {
+                            props2.data?.pluginOptions ? (
+                                <IconButton
+                                    aria-label="expand row"
+                                    size="small"
+                                    onClick={() => setOpen(!open)}>
+                                    {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                                </IconButton>
+                            ) : undefined
+                        }
+                    </TableCell>
+                    <TableCell>{props2.data.name}</TableCell>
+                    <TableCell>{props2.data.description}</TableCell>
+                    <TableCell align='right'>
+                        {!props2.data.force ?
+                            <Button variant="contained" style={{ maxWidth: '64px', maxHeight: '32px', minWidth: '32px', minHeight: '32px', marginLeft: "10px" }} onClick={() => {
+                                setState(!state)
+                                userPlugins[props2.data.key].state = !state
+                                props.onChange(userPlugins)
+                            }}>{state ? "Stop" : "Start"}</Button> : ""
+                        }
                     </TableCell>
                 </TableRow>
                 <TableRow>
@@ -69,50 +91,46 @@ export default function PluginsTable(props) {
                                         const [value, setValue] = React.useState(userPlugins[props2.data.key][obj.key])
 
                                         let onChange = (newValue) => {
-                                            console.log(newValue)
                                             userPlugins[props2.data.key][obj.key] = newValue
                                             setValue(newValue)
                                             props.onChange(userPlugins)
                                         }
-                                        if(obj.type == "Text") {
-                                            //<TextField required label="Username" value={name} onChange={e => setName(e.target.value)} disabled={!isNewUser} />
-                                            return <TextField label={obj.label} key={obj.label} value={value}   onChange={(e) => onChange(e.target.value)} />
-                                        
-                                            // return <TextField required label={obj.label} value={value} key={obj.label} onChange={(_, newValue) => onChange(newValue)} />
+                                        switch (obj.type) {
+                                            case "Text":
+                                                return <TextField label={obj.label} key={obj.label} value={value} onChange={(e) => onChange(e.target.value)} />
+                                            case "Checkbox":
+                                                return <FormControlLabel control={<Checkbox />} label={obj.label} key={obj.label} checked={value} onChange={(_, newValue) => onChange(newValue)} />
+                                            case "Time":
+                                                return TimePickerViews()
+                                            case "Select":
+                                                return <FormControl>
+                                                    <InputLabel id="simple-select-label">{obj.label}</InputLabel>
+                                                    <Select
+                                                        labelId="simple-select-label"
+                                                        id="simple-select"
+                                                        value={value}
+                                                        label={obj.label}
+                                                        onChange={(newValue) => onChange(newValue.target.value)}
+                                                    >
+                                                        {
+                                                            obj.selection.map((e, i) => <MenuItem value={i}>{e}</MenuItem>)
+                                                        }
+                                                    </Select>
+                                                </FormControl>
+                                            case "Slider":
+                                                return <Box sx={{ display: "flex", whiteSpace: "nowrap", justifyContent: "center", padding: "1px", textAlign: "center" }}>
+                                                    <Typography alignSelf={"center"} id="input-slider">
+                                                        {obj.label}
+                                                    </Typography>
+                                                    <Slider style={{ marginLeft: "20px", marginRight: "10px" }} aria-label="Default" key={obj.label} value={value} onChange={(_, newValue) => onChange(newValue)} />
+                                                    <Typography alignSelf={"center"} id="input-slider">
+                                                        {`${value}%`}
+                                                    </Typography>
+                                                </Box>
+                                            default:
+                                                return <Typography>{"Failed to load option"}</Typography>
                                         }
-                                        else if (obj.type == "Checkbox") {
-                                            return <FormControlLabel control={<Checkbox /> } label={obj.label} key={obj.label} checked={value} onChange={(_, newValue) => onChange(newValue)} />
-                                        }
-                                        else if (obj.type == "Select") {
-                                            return <FormControl>
-                                                <InputLabel id="simple-select-label">{obj.label}</InputLabel>
-                                                <Select
-                                                    labelId="simple-select-label"
-                                                    id="simple-select"
-                                                    value={value}
-                                                    label={obj.label}
-                                                    onChange={(newValue) => onChange(newValue.target.value)}
-                                                >
-                                                    {
-                                                        obj.selection.map((e,i) => <MenuItem value={i}>{e}</MenuItem>)
-                                                    }
-                                                </Select>
-                                            </FormControl>
-                                            //return <FormControlLabel control={<Select /> } label={obj.label} key={obj.label} checked={value} onChange={(_, newValue) => onChange(newValue)} />
-                                        }
-                                        else if (obj.type == "Slider") {
-                                            return <Box sx={{ display: "flex", whiteSpace: "nowrap", justifyContent: "center", padding: "1px", textAlign: "center" }}>
-                                                <Typography alignSelf={"center"} id="input-slider">
-                                                    {obj.label}
-                                                </Typography>
-                                                <Slider style={{ marginLeft: "20px", marginRight: "10px" }} aria-label="Default" key={obj.label} value={value} onChange={(_, newValue) => onChange(newValue)} />
-                                                <Typography alignSelf={"center"} id="input-slider">
-                                                    {`${value}%`}
-                                                </Typography>
-                                            </Box>
-                                        }
-                                        
-                                        return <Typography>{"Failed to load option"}</Typography>
+
                                     }
                                     return <PluginOption key={obj.key} />
                                 })}
@@ -131,11 +149,11 @@ export default function PluginsTable(props) {
                             <TableCell></TableCell>
                             <TableCell>Name</TableCell>
                             <TableCell>Description</TableCell>
-                            <TableCell align='right'/>
+                            <TableCell align='right' />
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {props.plugins.map((plugin) => <Plugin data={plugin} key={plugin.key}/>)}
+                        {props.plugins.map((plugin) => <Plugin data={plugin} key={plugin.key} />)}
                     </TableBody>
                 </Table>
             </TableContainer>

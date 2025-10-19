@@ -68,9 +68,9 @@ function App() {
   return (
     <div className="App">
       <ThemeProvider theme={darkTheme}>
-        <ResponsiveDrawer>
+        {/* <ResponsiveDrawer> */}
           <GGEUserTable ws={ws} plugins={plugins} rows={users} usersStatus={usersStatus} />
-        </ResponsiveDrawer>
+        {/* </ResponsiveDrawer> */}
       </ThemeProvider>
     </div>
   );
