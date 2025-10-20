@@ -1,7 +1,6 @@
 
 import './App.css';
 import GGEUserTable from './modules/GGEUsersTable'; 
-import ResponsiveDrawer from './modules/drawer'; 
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import * as React from 'react';
 import { ErrorType, GetErrorTypeName, ActionType, GetActionTypeName, User } from "./types.js"
@@ -25,11 +24,6 @@ function App() {
   let ws = React.useMemo(() => {
     let usersInternal = []
     const ws = new ReconnectingWebSocket(`${window.location.protocol === 'https:' ? "wss" : "ws"}://${window.location.hostname}:8882`,[], {WebSocket: WebSocket, minReconnectionDelay: 3000 })
-    
-    //const ws = new ReconnectingWebSocket(__DEV__ ? "ws://127.0.0.1:8882" : "wss://ashportal.ddns.net:8882",[], {WebSocket: WebSocket, minReconnectionDelay: 3000 })
-    //ashportal.ddns.net
-//    const ws = new ReconnectingWebSocket(`wss://${window.location.hostname}:8882`,[], {WebSocket: WebSocket, minReconnectionDelay: 3000 })
-    // const ws = new ReconnectingWebSocket(`ws://${"127.0.0.1"}:8882`,[], {WebSocket: WebSocket, minReconnectionDelay: 3000 })
     
     ws.addEventListener("open", () => {
       ws.send(JSON.stringify([ErrorType.Success, ActionType.GetUUID, getCookie("uuid")]))
@@ -68,9 +62,7 @@ function App() {
   return (
     <div className="App">
       <ThemeProvider theme={darkTheme}>
-        {/* <ResponsiveDrawer> */}
           <GGEUserTable ws={ws} plugins={plugins} rows={users} usersStatus={usersStatus} />
-        {/* </ResponsiveDrawer> */}
       </ThemeProvider>
     </div>
   );

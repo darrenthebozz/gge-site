@@ -28,6 +28,7 @@ import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
+import { Label } from '@mui/icons-material';
 
 function TimePickerViews() {
   return (
@@ -50,6 +51,7 @@ function TimePickerViews() {
 export default function PluginsTable(props) {
     let userPlugins = props.userPlugins
     userPlugins ??= {}
+    const array_chunks = (array, chunk_size) => Array(Math.ceil(array.length / chunk_size)).fill().map((_, index) => index * chunk_size).map(begin => array.slice(begin, begin + chunk_size));
     let Plugin = (props2) => {
         userPlugins[props2.data.key] ??= {}
         const [open, setOpen] = React.useState(false);
@@ -85,44 +87,71 @@ export default function PluginsTable(props) {
                     <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={4} >
                         <Collapse in={open} timeout="auto" unmountOnExit>
                             <FormGroup>
-                                {props2.data?.pluginOptions?.map((obj) => {
-                                    let PluginOption = () => {
-                                        userPlugins[props2.data.key][obj.key] ??= obj.default ??= 0
-                                        const [value, setValue] = React.useState(userPlugins[props2.data.key][obj.key])
+                                {props2.data?.pluginOptions?.map((obj2) => {
+                                    let PluginOption = (props4) => {
+                                        userPlugins[props2.data.key][props4.pluginData.key] ??= props4.pluginData.default ??= 0
+                                        const [value, setValue] = React.useState(userPlugins[props2.data.key][props4.pluginData.key])
 
                                         let onChange = (newValue) => {
-                                            userPlugins[props2.data.key][obj.key] = newValue
+                                            userPlugins[props2.data.key][props4.pluginData.key] = newValue
                                             setValue(newValue)
                                             props.onChange(userPlugins)
                                         }
-                                        switch (obj.type) {
+                                        switch (props4.pluginData.type) {
+                                            case "Label":
+                                                return <>{props4.pluginData.label}</>
+                                                break
                                             case "Text":
-                                                return <TextField label={obj.label} key={obj.label} value={value} onChange={(e) => onChange(e.target.value)} />
+                                                return <TextField label={props4.pluginData.label} key={props4.pluginData.label} value={value} onChange={(e) => onChange(e.target.value)} />
                                             case "Checkbox":
-                                                return <FormControlLabel control={<Checkbox />} label={obj.label} key={obj.label} checked={value} onChange={(_, newValue) => onChange(newValue)} />
+                                                return <FormControlLabel control={<Checkbox />} label={props4.pluginData.label} key={props4.pluginData.label} checked={value} onChange={(_, newValue) => onChange(newValue)} />
+                                            case "Table":
+                                                return <TableContainer>
+                                                    <Table aria-label="simple table">
+                                                        <TableHead>
+                                                            <TableRow>
+                                                                {props4.pluginData.row.map(cRow => <TableCell>{cRow}</TableCell>)}
+                                                            </TableRow>
+                                                        </TableHead>
+                                                        <TableBody>
+                                                            {
+                                                                array_chunks(props4.pluginData.data, props4.pluginData.row.length).map(e =>
+                                                                        <TableRow>
+                                                                            {
+                                                                                e.map(e =>
+                                                                                    <TableCell>
+                                                                                        <PluginOption pluginData={e} key={e.key} />
+                                                                                    </TableCell>)
+                                                                                }
+                                                                        </TableRow>)
+                                                            }
+                                                        </TableBody>
+                                                    </Table>
+                                                </TableContainer>
+                                                break
                                             case "Time":
                                                 return TimePickerViews()
                                             case "Select":
                                                 return <FormControl>
-                                                    <InputLabel id="simple-select-label">{obj.label}</InputLabel>
+                                                    <InputLabel id="simple-select-label">{props4.pluginData.label}</InputLabel>
                                                     <Select
                                                         labelId="simple-select-label"
                                                         id="simple-select"
                                                         value={value}
-                                                        label={obj.label}
+                                                        label={props4.pluginData.label}
                                                         onChange={(newValue) => onChange(newValue.target.value)}
                                                     >
                                                         {
-                                                            obj.selection.map((e, i) => <MenuItem value={i}>{e}</MenuItem>)
+                                                            props4.pluginData.selection.map((e, i) => <MenuItem value={i}>{e}</MenuItem>)
                                                         }
                                                     </Select>
                                                 </FormControl>
                                             case "Slider":
                                                 return <Box sx={{ display: "flex", whiteSpace: "nowrap", justifyContent: "center", padding: "1px", textAlign: "center" }}>
                                                     <Typography alignSelf={"center"} id="input-slider">
-                                                        {obj.label}
+                                                        {props4.pluginData.label}
                                                     </Typography>
-                                                    <Slider style={{ marginLeft: "20px", marginRight: "10px" }} aria-label="Default" key={obj.label} value={value} onChange={(_, newValue) => onChange(newValue)} />
+                                                    <Slider style={{ marginLeft: "20px", marginRight: "10px" }} aria-label="Default" key={props4.pluginData.label} value={value} onChange={(_, newValue) => onChange(newValue)} />
                                                     <Typography alignSelf={"center"} id="input-slider">
                                                         {`${value}%`}
                                                     </Typography>
@@ -132,7 +161,7 @@ export default function PluginsTable(props) {
                                         }
 
                                     }
-                                    return <PluginOption key={obj.key} />
+                                    return <PluginOption pluginData={obj2} key={obj2.key} />
                                 })}
                             </FormGroup>
                         </Collapse>
