@@ -24,29 +24,6 @@ import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Slider from '@mui/material/Slider';
 import Typography from '@mui/material/Typography';
-import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { TimePicker } from '@mui/x-date-pickers/TimePicker';
-import { Label } from '@mui/icons-material';
-
-function TimePickerViews() {
-  return (
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <DemoContainer components={['TimePicker', 'TimePicker', 'TimePicker']}>
-        <DemoItem label={'"hours", "minutes" and "seconds"'}>
-          <TimePicker views={['hours', 'minutes', 'seconds']} />
-        </DemoItem>
-        <DemoItem label={'"hours"'}>
-          <TimePicker views={['hours']} />
-        </DemoItem>
-        <DemoItem label={'"minutes" and "seconds"'}>
-          <TimePicker views={['minutes', 'seconds']} format="mm:ss" />
-        </DemoItem>
-      </DemoContainer>
-    </LocalizationProvider>
-  );
-}
 
 export default function PluginsTable(props) {
     let userPlugins = props.userPlugins
@@ -129,8 +106,21 @@ export default function PluginsTable(props) {
                                                     </Table>
                                                 </TableContainer>
                                                 break
-                                            case "Time":
-                                                return TimePickerViews()
+                                            case "Channel":
+                                                return <FormControl>
+                                                    <InputLabel id="simple-select-label">{props4.pluginData.label}</InputLabel>
+                                                    <Select
+                                                        labelId="simple-select-label"
+                                                        id="simple-select"
+                                                        value={value}
+                                                        label={props4.pluginData.label}
+                                                        onChange={(newValue) => onChange(newValue.target.value)}
+                                                    >
+                                                        {
+                                                            props.channels?.map(channel => <MenuItem value={channel.id}>{channel.name}</MenuItem>)
+                                                        }
+                                                    </Select>
+                                                </FormControl>
                                             case "Select":
                                                 return <FormControl>
                                                     <InputLabel id="simple-select-label">{props4.pluginData.label}</InputLabel>

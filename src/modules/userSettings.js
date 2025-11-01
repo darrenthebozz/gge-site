@@ -34,8 +34,7 @@ export default function UserSettings(props) {
                     <TextField required label="Username" value={name} onChange={e => setName(e.target.value)} disabled={!isNewUser} />
                     <TextField required label="Password" type='password' value={pass} onChange={e => setPass(e.target.value)} />
                     <FormControlLabel style={{ margin: "auto", marginRight:"2px" }} control={<Checkbox/>} checked={externalEvent} onChange={e => setExternalEvent(e.target.checked)} label="OR/BTH" />
-
-                    <PluginsTable plugins={props.plugins} userPlugins={plugins} 
+                    <PluginsTable plugins={props.plugins} userPlugins={plugins} channels={props.channels} 
                     onChange={ e => setPlugins(e)}/>
                     <Button variant="contained" style={{ margin: "10px", maxWidth: '64px', maxHeight: '32px', minWidth: '32px', minHeight: '32px' }}
                         onClick={async () => {
