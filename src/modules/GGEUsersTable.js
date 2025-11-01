@@ -13,7 +13,6 @@ import Checkbox from '@mui/material/Checkbox';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { ErrorType, GetErrorTypeName, ActionType, GetActionTypeName, LogLevel } from "../types.js"
-import config from '../config.json'
 
 export default function GGEUserTable(props) {
     const [selected, setSelected] = React.useState([]);
@@ -80,7 +79,7 @@ export default function GGEUserTable(props) {
                               key={selectedUser.id}
                               closeBackdrop={handleSettingsClose} 
                               plugins={props.plugins}
-                              channels={props.discordInfo[3]}/>
+                              channels={props.discordInfo[2]}/>
             </Backdrop>
             <Backdrop
                 sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}

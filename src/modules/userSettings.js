@@ -13,6 +13,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import { ErrorType, GetErrorTypeName, ActionType, GetActionTypeName } from "../types.js"
 
 export default function UserSettings(props) {
+    console.log(props.channels)
     props.selectedUser.name ??= ""
     const isNewUser = props.selectedUser.name == ""
     const [name, setName] = React.useState(props.selectedUser.name)

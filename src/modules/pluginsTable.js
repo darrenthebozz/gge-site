@@ -117,7 +117,7 @@ export default function PluginsTable(props) {
                                                         onChange={(newValue) => onChange(newValue.target.value)}
                                                     >
                                                         {
-                                                            props.channels?.map(channel => <MenuItem value={channel.id}>{channel.name}</MenuItem>)
+                                                            props.channels?.map((channel,i) => <MenuItem value={channel.id} key={`${props4.pluginData.label}${i}`}>{channel.name}</MenuItem>)
                                                         }
                                                     </Select>
                                                 </FormControl>
