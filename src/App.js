@@ -20,7 +20,7 @@ function App() {
   let [users, setUsers] = React.useState([])
   let [usersStatus, setUsersStatus] = React.useState({})
   let [plugins, setPlugins] = React.useState([])
-  let [channels, setChannels] = React.useState([])
+  let [discordInfo, setDiscordInfo] = React.useState([])
   let ws = React.useMemo(() => {
     let usersInternal = []
     const ws = new ReconnectingWebSocket(`${window.location.protocol === 'https:' ? "wss" : "ws"}://${window.location.hostname}:8882`,[], {WebSocket: WebSocket, minReconnectionDelay: 3000 })
@@ -44,7 +44,7 @@ function App() {
           break;
         case ActionType.GetChannels:
           obj ??= []
-          setChannels(obj)
+          setDiscordInfo(obj)
           break
         case ActionType.GetUsers:
           if(err != ErrorType.Success)
@@ -66,7 +66,7 @@ function App() {
   return (
     <div className="App">
       <ThemeProvider theme={darkTheme}>
-          <GGEUserTable ws={ws} plugins={plugins} rows={users} usersStatus={usersStatus} channels={channels} />
+          <GGEUserTable ws={ws} plugins={plugins} rows={users} usersStatus={usersStatus} discordInfo={discordInfo} />
       </ThemeProvider>
     </div>
   );
