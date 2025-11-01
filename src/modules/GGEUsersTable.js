@@ -173,6 +173,10 @@ export default function GGEUserTable(props) {
                                                 <Typography>Coin</Typography>
                                                 <Typography>{status.coin ??= "NaN"}</Typography>
                                             </Box>
+                                            <Box sx={{ display: 'flex',flexDirection:"column" }} paddingRight={"10px"}>
+                                                <Typography>Rubies</Typography>
+                                                <Typography>{status.rubies ??= "NaN"}</Typography>
+                                            </Box>
                                         </Box>
                                     </TableCell>
                                     <TableCell align="right" padding='none' style={{ padding: "10px" }}>
