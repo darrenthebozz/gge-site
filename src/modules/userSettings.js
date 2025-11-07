@@ -12,13 +12,54 @@ import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import { ErrorType, GetErrorTypeName, ActionType, GetActionTypeName } from "../types.js"
 
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+
+let lang = JSON.parse(await (await fetch(`${window.location.protocol === 'https:' ? "https" : "http"}://${window.location.hostname}/lang.json`)).text())
+
+let servers = new DOMParser()
+    .parseFromString(await (await fetch(`${window.location.protocol === 'https:' ? "https" : "http"}://${window.location.hostname}/1.xml`)).text(),"text/xml");
+let instances = []
+let _instances = servers.getElementsByTagName("instance")
+//xmlDoc.getElementsByTagName("title")[0].childNodes[0].nodeValue;
+
+for (var key in _instances) {
+    let obj = _instances[key]
+
+    let server, zone, instanceLocaId, instanceName
+    
+    for (var key2 in obj.childNodes) {
+        let obj2 = obj.childNodes[key2]
+        
+        switch(obj2.nodeName) 
+        {
+            case "server":
+                server = obj2.childNodes[0].nodeValue
+                break;
+            case "zone":
+                zone = obj2.childNodes[0].nodeValue
+                break;
+            case "instanceLocaId":
+                instanceLocaId = obj2.childNodes[0].nodeValue
+                break;
+            case "instanceName":
+                instanceName = obj2.childNodes[0].nodeValue
+                break;
+        }
+    }
+    if(instanceLocaId)
+    instances.push({id: obj.getAttribute("value"),server,zone,instanceLocaId,instanceName})
+}
+console.log(instances)
 export default function UserSettings(props) {
-    console.log(props.channels)
     props.selectedUser.name ??= ""
     const isNewUser = props.selectedUser.name == ""
     const [name, setName] = React.useState(props.selectedUser.name)
     const [pass, setPass] = React.useState("")
     const [plugins, setPlugins] = React.useState(props.selectedUser.plugins)
+    const [server, setServer] = React.useState(props.selectedUser.server ?? instances[0].id)
     const [externalEvent, setExternalEvent] = React.useState(props.selectedUser.externalEvent)
     return (
         <div onClick={(event) => event.stopPropagation()}>
@@ -34,7 +75,22 @@ export default function UserSettings(props) {
                 <FormGroup row={true} style={{ padding: "12px" }}>
                     <TextField required label="Username" value={name} onChange={e => setName(e.target.value)} disabled={!isNewUser} />
                     <TextField required label="Password" type='password' value={pass} onChange={e => setPass(e.target.value)} />
+                    
+                    <FormControl style={{width: "100px"}}>
+                        <InputLabel id="simple-select-label">Server</InputLabel>
+                        <Select
+                            labelId="simple-select-label"
+                            id="simple-select"
+                            value={server}
+                            onChange={(newValue) => setServer(newValue.target.value)}
+                        >
+                            {
+                                instances.map((server, i) => <MenuItem value={server.id} key={`Server${i}`}>{lang[server.instanceLocaId] + ' ' + server.instanceName}</MenuItem>)
+                            }
+                        </Select>
+                    </FormControl>
                     <FormControlLabel style={{ margin: "auto", marginRight:"2px" }} control={<Checkbox/>} checked={externalEvent} onChange={e => setExternalEvent(e.target.checked)} label="OR/BTH" />
+                    
                     <PluginsTable plugins={props.plugins} userPlugins={plugins} channels={props.channels} 
                     onChange={ e => setPlugins(e)}/>
                     <Button variant="contained" style={{ margin: "10px", maxWidth: '64px', maxHeight: '32px', minWidth: '32px', minHeight: '32px' }}
@@ -43,6 +99,8 @@ export default function UserSettings(props) {
                                 props.selectedUser.name = name
                                 props.selectedUser.plugins = plugins
                                 props.selectedUser.externalEvent = externalEvent
+                                props.selectedUser.server = server
+                                
                                 if(pass)
                                 props.selectedUser.pass = pass
                                 else if(isNewUser)

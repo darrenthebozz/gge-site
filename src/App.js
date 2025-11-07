@@ -1,4 +1,3 @@
-
 import './App.css';
 import GGEUserTable from './modules/GGEUsersTable'; 
 import { ThemeProvider, createTheme } from '@mui/material/styles';
@@ -10,7 +9,6 @@ const darkTheme = createTheme({
     mode: 'dark',
   },
 });
-
 function getCookie(name) {
   const value = `; ${document.cookie}`;
   const parts = value.split(`; ${name}=`);
