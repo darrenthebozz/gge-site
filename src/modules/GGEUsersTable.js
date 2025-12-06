@@ -14,6 +14,8 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { ErrorType, GetErrorTypeName, ActionType, GetActionTypeName, LogLevel } from "../types.js"
 
+const serverInfo = JSON.parse(await (await fetch(`${window.location.protocol === 'https:' ? "https" : "http"}://${window.location.hostname}:${window.location.port}/serverInfo.json`)).text())
+
 export default function GGEUserTable(props) {
     const [selected, setSelected] = React.useState([]);
     const [openSettings, setOpenSettings] = React.useState(false);
@@ -79,7 +81,7 @@ export default function GGEUserTable(props) {
                               key={selectedUser.id}
                               closeBackdrop={handleSettingsClose} 
                               plugins={props.plugins}
-                              channels={props.discordInfo[2]}/>
+                              channels={props.channelInfo[1]}/>
             </Backdrop>
             <Backdrop
                 sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
@@ -111,7 +113,7 @@ export default function GGEUserTable(props) {
                                 <Button variant="contained"
                                     style={{ margin: "10px", maxHeight: '32px', minHeight: '32px' }}
                                     onClick={async () =>
-                                        window.open(`https://discord.com/oauth2/authorize?client_id=${props.discordInfo[0]}&permissions=8&response_type=code&redirect_uri=${window.location.protocol === 'https:' ? "https" : "http"}%3A%2F%2F${window.location.hostname}%3A${props.discordInfo[1]}&integration_type=0&scope=identify+guilds.join+bot`, "_blank")}
+                                        window.open(`https://discord.com/oauth2/authorize?client_id=${props.channelInfo[0]}&permissions=8&response_type=code&redirect_uri=${window.location.protocol === 'https:' ? "https" : "http"}%3A%2F%2F${window.location.hostname}%3A${serverInfo.discordPort}&integration_type=0&scope=identify+guilds.join+bot`, "_blank")}
                                 >Link Discord</Button>
                                 <Button variant="contained" style={{ maxWidth: '64px', maxHeight: '32px', minWidth: '32px', minHeight: '32px', marginRight: "10px" }} onClick={handleSettingsOpen}>+</Button>
                             </TableCell>

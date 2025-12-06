@@ -4,6 +4,9 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import * as React from 'react';
 import { ErrorType, GetErrorTypeName, ActionType, GetActionTypeName, User } from "./types.js"
 import ReconnectingWebSocket from "reconnecting-websocket"
+
+const serverInfo = JSON.parse(await (await fetch(`${window.location.protocol === 'https:' ? "https" : "http"}://${window.location.hostname}:${window.location.port}/serverInfo.json`)).text())
+
 const darkTheme = createTheme({
   palette: {
     mode: 'dark',
@@ -18,10 +21,10 @@ function App() {
   let [users, setUsers] = React.useState([])
   let [usersStatus, setUsersStatus] = React.useState({})
   let [plugins, setPlugins] = React.useState([])
-  let [discordInfo, setDiscordInfo] = React.useState([])
+  let [channelInfo, setChannelInfo] = React.useState([])
   let ws = React.useMemo(() => {
     let usersInternal = []
-    const ws = new ReconnectingWebSocket(`${window.location.protocol === 'https:' ? "wss" : "ws"}://${window.location.hostname}:8882`,[], {WebSocket: WebSocket, minReconnectionDelay: 3000 })
+    const ws = new ReconnectingWebSocket(`${window.location.protocol === 'https:' ? "wss" : "ws"}://${window.location.hostname}:${serverInfo.webSocketPort}`,[], {WebSocket: WebSocket, minReconnectionDelay: 3000 })
     
     ws.addEventListener("open", () => {
       ws.send(JSON.stringify([ErrorType.Success, ActionType.GetUUID, getCookie("uuid")]))
@@ -42,7 +45,7 @@ function App() {
           break;
         case ActionType.GetChannels:
           obj ??= []
-          setDiscordInfo(obj)
+          setChannelInfo(obj)
           break
         case ActionType.GetUsers:
           if(err != ErrorType.Success)
@@ -64,7 +67,7 @@ function App() {
   return (
     <div className="App">
       <ThemeProvider theme={darkTheme}>
-          <GGEUserTable ws={ws} plugins={plugins} rows={users} usersStatus={usersStatus} discordInfo={discordInfo} />
+          <GGEUserTable ws={ws} plugins={plugins} rows={users} usersStatus={usersStatus} channelInfo={channelInfo} />
       </ThemeProvider>
     </div>
   );

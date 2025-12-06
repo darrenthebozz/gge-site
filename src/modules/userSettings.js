@@ -17,10 +17,10 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 
-let lang = JSON.parse(await (await fetch(`${window.location.protocol === 'https:' ? "https" : "http"}://${window.location.hostname}/lang.json`)).text())
+let lang = JSON.parse(await (await fetch(`${window.location.protocol === 'https:' ? "https" : "http"}://${window.location.hostname}:${window.location.port}/lang.json`)).text())
 
 let servers = new DOMParser()
-    .parseFromString(await (await fetch(`${window.location.protocol === 'https:' ? "https" : "http"}://${window.location.hostname}/1.xml`)).text(),"text/xml");
+    .parseFromString(await (await fetch(`${window.location.protocol === 'https:' ? "https" : "http"}://${window.location.hostname}:${window.location.port}/1.xml`)).text(),"text/xml");
 let instances = []
 let _instances = servers.getElementsByTagName("instance")
 //xmlDoc.getElementsByTagName("title")[0].childNodes[0].nodeValue;
