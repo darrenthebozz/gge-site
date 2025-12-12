@@ -44,7 +44,7 @@ class User {
       this.plugins = obj.plugins
       this.lt = Number(obj.lt)
       this.externalEvent = Boolean(obj?.externalEvent)
-      this.server = Boolean(obj?.server)
+      this.server = Number(obj?.server)
     }
   }
 export { ActionType, GetActionTypeName, ErrorType, GetErrorTypeName, LogLevel, User }
