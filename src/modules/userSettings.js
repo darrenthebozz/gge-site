@@ -1,29 +1,24 @@
-import * as React from 'react';
+import * as React from 'react'
+import Checkbox from '@mui/material/Checkbox'
+import TextField from '@mui/material/TextField'
+import Paper from '@mui/material/Paper'
+import Button from '@mui/material/Button'
+import FormGroup from '@mui/material/FormGroup'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import Select from '@mui/material/Select'
+import MenuItem from '@mui/material/MenuItem'
+import FormControl from '@mui/material/FormControl'
+import InputLabel from '@mui/material/InputLabel'
+
+import { ErrorType, ActionType } from "../types.js"
 import PluginsTable from './pluginsTable'
-
-import Checkbox from '@mui/material/Checkbox';
-import Stack from '@mui/material/Stack';
-import TextField from '@mui/material/TextField';
-import List from '@mui/material/List'
-import Paper from '@mui/material/Paper';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import FormGroup from '@mui/material/FormGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import { ErrorType, GetErrorTypeName, ActionType, GetActionTypeName } from "../types.js"
-
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
 
 let lang = JSON.parse(await (await fetch(`${window.location.protocol === 'https:' ? "https" : "http"}://${window.location.hostname}:${window.location.port}/lang.json`)).text())
 
 let servers = new DOMParser()
-    .parseFromString(await (await fetch(`${window.location.protocol === 'https:' ? "https" : "http"}://${window.location.hostname}:${window.location.port}/1.xml`)).text(),"text/xml");
+    .parseFromString(await (await fetch(`${window.location.protocol === 'https:' ? "https" : "http"}://${window.location.hostname}:${window.location.port}/1.xml`)).text(),"text/xml")
 let instances = []
 let _instances = servers.getElementsByTagName("instance")
-//xmlDoc.getElementsByTagName("title")[0].childNodes[0].nodeValue;
 
 for (var key in _instances) {
     let obj = _instances[key]
@@ -37,32 +32,39 @@ for (var key in _instances) {
         {
             case "server":
                 server = obj2.childNodes[0].nodeValue
-                break;
+                break
             case "zone":
                 zone = obj2.childNodes[0].nodeValue
-                break;
+                break
             case "instanceLocaId":
                 instanceLocaId = obj2.childNodes[0].nodeValue
-                break;
+                break
             case "instanceName":
                 instanceName = obj2.childNodes[0].nodeValue
-                break;
+                break
+            default:
         }
     }
     if(instanceLocaId)
     instances.push({id: obj.getAttribute("value"),server,zone,instanceLocaId,instanceName})
 }
-console.log(instances)
+
 export default function UserSettings(props) {
     props.selectedUser.name ??= ""
-    const isNewUser = props.selectedUser.name == ""
+    const isNewUser = props.selectedUser.name === ""
     const [name, setName] = React.useState(props.selectedUser.name)
     const [pass, setPass] = React.useState("")
     const [plugins, setPlugins] = React.useState(props.selectedUser.plugins)
     const [server, setServer] = React.useState(props.selectedUser.server ?? instances[0].id)
     const [externalEvent, setExternalEvent] = React.useState(props.selectedUser.externalEvent)
+
+    const pluginTable = React.useMemo(() => {
+        return <PluginsTable plugins={props.plugins} userPlugins={plugins} channels={props.channels} 
+                    onChange={ e => setPlugins(e)}/>
+    }, [props.channels, props.plugins, plugins])
+
     return (
-        <div onClick={(event) => event.stopPropagation()}>
+        <div onClick={event => event.stopPropagation()}>
             <Paper>
                 <div style={{color:"red", border:"red 2px solid"}}>
                     <b>Warning</b>
@@ -90,9 +92,9 @@ export default function UserSettings(props) {
                         </Select>
                     </FormControl>
                     <FormControlLabel style={{ margin: "auto", marginRight:"2px" }} control={<Checkbox/>} checked={externalEvent} onChange={e => setExternalEvent(e.target.checked)} label="OR/BTH" />
-                    
-                    <PluginsTable plugins={props.plugins} userPlugins={plugins} channels={props.channels} 
-                    onChange={ e => setPlugins(e)}/>
+                    {
+                        pluginTable
+                    }
                     <Button variant="contained" style={{ margin: "10px", maxWidth: '64px', maxHeight: '32px', minWidth: '32px', minHeight: '32px' }}
                         onClick={async () => {
                             try {
@@ -119,5 +121,5 @@ export default function UserSettings(props) {
                 </FormGroup>
             </Paper>
         </div>
-    );
+    )
 }

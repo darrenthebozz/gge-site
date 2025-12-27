@@ -9,12 +9,11 @@ const ActionType = Object.freeze({
     StatusUser: 7,
     Unknown: 8,
     GetChannels : 18
-});
-let GetActionTypeName = (id) => {
-    let ret = Object.keys(ActionType).find(key => ActionType[key] == id)
-    ret ??= ActionType.Unknown
-    return ret
-}
+})
+const GetActionTypeName = id => 
+    Object.keys(ActionType).find(key => ActionType[key] === id) ?? 
+        ActionType.Unknown
+
 const ErrorType = Object.freeze({
     Success: 0,
     UnknownAction: 1,
@@ -22,18 +21,17 @@ const ErrorType = Object.freeze({
     Authentication: 3,
     Generic: 4,
     UnknownError: 5,
-});
+})
 
-let GetErrorTypeName = (id) => {
-    let ret = Object.keys(ErrorType).find(key => ErrorType[key] == id)
-    return ret ??= "UnknownError"
-}
+const GetErrorTypeName = id => 
+    Object.keys(ErrorType).find(key => ErrorType[key] === id) ??
+        "UnknownError"
+
 const LogLevel = Object.freeze({
     Info: 0,
     Warn: 1,
     Error: 2
-});
-
+})
 
 class User {
     constructor(obj) {

@@ -1,37 +1,34 @@
-import * as React from 'react';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
-import Button from '@mui/material/Button';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import IconButton from '@mui/material/IconButton';
-import Collapse from '@mui/material/Collapse';
-import Checkbox from '@mui/material/Checkbox';
-import Select from '@mui/material/Select';
-import Box from '@mui/material/Box';
-
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-
-import TextField from '@mui/material/TextField';
-import FormGroup from '@mui/material/FormGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Slider from '@mui/material/Slider';
-import Typography from '@mui/material/Typography';
+import * as React from 'react'
+import Table from '@mui/material/Table'
+import TableBody from '@mui/material/TableBody'
+import TableCell from '@mui/material/TableCell'
+import TableContainer from '@mui/material/TableContainer'
+import TableHead from '@mui/material/TableHead'
+import TableRow from '@mui/material/TableRow'
+import Paper from '@mui/material/Paper'
+import Button from '@mui/material/Button'
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
+import IconButton from '@mui/material/IconButton'
+import Collapse from '@mui/material/Collapse'
+import Checkbox from '@mui/material/Checkbox'
+import Select from '@mui/material/Select'
+import Box from '@mui/material/Box'
+import MenuItem from '@mui/material/MenuItem'
+import FormControl from '@mui/material/FormControl'
+import InputLabel from '@mui/material/InputLabel'
+import TextField from '@mui/material/TextField'
+import FormGroup from '@mui/material/FormGroup'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import Slider from '@mui/material/Slider'
+import Typography from '@mui/material/Typography'
 
 export default function PluginsTable(props) {
-    let userPlugins = props.userPlugins
-    userPlugins ??= {}
-    const array_chunks = (array, chunk_size) => Array(Math.ceil(array.length / chunk_size)).fill().map((_, index) => index * chunk_size).map(begin => array.slice(begin, begin + chunk_size));
-    let Plugin = (props2) => {
+    const userPlugins = props.userPlugins ?? {}
+    const array_chunks = (array, chunk_size) => Array(Math.ceil(array.length / chunk_size)).fill().map((_, index) => index * chunk_size).map(begin => array.slice(begin, begin + chunk_size))
+    const Plugin = (props2) => {
         userPlugins[props2.data.key] ??= {}
-        const [open, setOpen] = React.useState(false);
+        const [open, setOpen] = React.useState(false)
         const [state, setState] = React.useState(userPlugins[props2.data.key]?.state)
         return (
             <>
@@ -66,7 +63,7 @@ export default function PluginsTable(props) {
                             <FormGroup>
                                 {props2.data?.pluginOptions?.map((obj2) => {
                                     let PluginOption = (props4) => {
-                                        userPlugins[props2.data.key][props4.pluginData.key] ??= props4.pluginData.default ??= 0
+                                        userPlugins[props2.data.key][props4.pluginData.key] ??= props4.pluginData.default
                                         const [value, setValue] = React.useState(userPlugins[props2.data.key][props4.pluginData.key])
 
                                         let onChange = (newValue) => {
@@ -77,7 +74,6 @@ export default function PluginsTable(props) {
                                         switch (props4.pluginData.type) {
                                             case "Label":
                                                 return <>{props4.pluginData.label}</>
-                                                break
                                             case "Text":
                                                 return <TextField label={props4.pluginData.label} key={props4.pluginData.label} value={value} onChange={(e) => onChange(e.target.value)} />
                                             case "Checkbox":
@@ -105,7 +101,6 @@ export default function PluginsTable(props) {
                                                         </TableBody>
                                                     </Table>
                                                 </TableContainer>
-                                                break
                                             case "Channel":
                                                 return <FormControl>
                                                     <InputLabel id="simple-select-label">{props4.pluginData.label}</InputLabel>
@@ -149,7 +144,6 @@ export default function PluginsTable(props) {
                                             default:
                                                 return <Typography>{"Failed to load option"}</Typography>
                                         }
-
                                     }
                                     return <PluginOption pluginData={obj2} key={obj2.key} />
                                 })}
@@ -172,10 +166,10 @@ export default function PluginsTable(props) {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {props.plugins.map((plugin) => <Plugin data={plugin} key={plugin.key} />)}
+                        {props.plugins.map(plugin => <Plugin data={plugin} key={plugin.key} />)}
                     </TableBody>
                 </Table>
             </TableContainer>
         </Paper>
-    );
+    )
 }
