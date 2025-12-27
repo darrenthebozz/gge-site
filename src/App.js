@@ -24,10 +24,6 @@ function App() {
     let usersInternal = []
     const ws = new ReconnectingWebSocket(`${window.location.protocol === 'https:' ? "wss" : "ws"}://${window.location.hostname}:${window.location.port}`,[], {WebSocket: WebSocket, minReconnectionDelay: 3000 })
     
-    ws.addEventListener("open", () => {
-      ws.send(JSON.stringify([ErrorType.Success, ActionType.GetUUID, getCookie("uuid")]))
-    })
-
     ws.addEventListener("message", (msg) => {
       let [err, action, obj] = JSON.parse(msg.data.toString())
       if(err)
@@ -38,8 +34,6 @@ function App() {
         case ActionType.GetUUID:
           if(err == ErrorType.Unauthenticated)
             return window.location.href = "signin.html";
-          
-          ws.send(JSON.stringify([ErrorType.Success, ActionType.GetUsers, undefined]))
           break;
         case ActionType.GetChannels:
           obj ??= []
