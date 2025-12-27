@@ -5,8 +5,6 @@ import * as React from 'react';
 import { ErrorType, GetErrorTypeName, ActionType, GetActionTypeName, User } from "./types.js"
 import ReconnectingWebSocket from "reconnecting-websocket"
 
-const serverInfo = JSON.parse(await (await fetch(`${window.location.protocol === 'https:' ? "https" : "http"}://${window.location.hostname}:${window.location.port}/serverInfo.json`)).text())
-
 const darkTheme = createTheme({
   palette: {
     mode: 'dark',
@@ -24,7 +22,7 @@ function App() {
   let [channelInfo, setChannelInfo] = React.useState([])
   let ws = React.useMemo(() => {
     let usersInternal = []
-    const ws = new ReconnectingWebSocket(`${window.location.protocol === 'https:' ? "wss" : "ws"}://${window.location.hostname}:${serverInfo.webSocketPort}`,[], {WebSocket: WebSocket, minReconnectionDelay: 3000 })
+    const ws = new ReconnectingWebSocket(`${window.location.protocol === 'https:' ? "wss" : "ws"}://${window.location.hostname}:${window.location.port}`,[], {WebSocket: WebSocket, minReconnectionDelay: 3000 })
     
     ws.addEventListener("open", () => {
       ws.send(JSON.stringify([ErrorType.Success, ActionType.GetUUID, getCookie("uuid")]))
